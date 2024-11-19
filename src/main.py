@@ -55,8 +55,9 @@ class ImageStitching:
             orb = cv2.ORB_create(5000)
             keypoints_base, descriptors_base = orb.detectAndCompute(gray_base, None)
             keypoints_next, descriptors_next = orb.detectAndCompute(gray_next, None)
-
+            
             # Using Bruteforce matcher to find matching keypoints
+            # source: https://docs.opencv.org/4.x/dc/dc3/tutorial_py_matcher.html
             bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
             matches = bf.match(descriptors_base, descriptors_next)
             matches = sorted(matches, key=lambda x: x.distance)
@@ -69,8 +70,11 @@ class ImageStitching:
             dst_pts = np.float32([keypoints_next[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
 
             #Using RANSAC for Homography
+            #source: https://docs.opencv.org/4.x/d1/de0/tutorial_py_feature_homography.html
             H, mask = cv2.findHomography(dst_pts, src_pts, cv2.RANSAC, 5.0)
 
+            #Transforming images 
+            # source: https://opencv-companion.streamlit.app/Geometric_Transformations_of_Images
             height, width, _ = base_img.shape
             warped_img = cv2.warpPerspective(images[i], H, (width + images[i].shape[1], height))
 
@@ -93,7 +97,7 @@ if __name__ == '__main__':
     folder = input("Select a folder number (1-6):\n")
     image_folder = os.path.join("./Images", folder)
     image_paths = sorted(glob.glob(os.path.join(image_folder, '*.*')))  # Sort for consistent order
-
+    print(image_paths)
     images = [cv2.imread(path) for path in image_paths if cv2.imread(path) is not None]
 
     if not images:
