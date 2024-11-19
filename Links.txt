@@ -1,3 +1,0 @@
-Link for the assignment: https://canvas.elte.hu/courses/48962/assignments/382405
-
-Link for PyImageSearch Article: https://pyimagesearch.com/2018/12/17/image-stitching-with-opencv-and-python/
